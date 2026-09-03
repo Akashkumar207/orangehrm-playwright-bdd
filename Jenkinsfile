@@ -30,6 +30,14 @@ pipeline {
         disableConcurrentBuilds()
     }
 
+    triggers {
+        // Nightly full regression on whichever branch this job is configured
+        // against (e.g. develop). Requires periodic-build polling to be
+        // enabled for the job/branch in Jenkins — the Jenkinsfile alone
+        // declares the schedule, it doesn't enable itself.
+        cron('H 2 * * *')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -55,15 +63,52 @@ pipeline {
             }
         }
 
-        stage('Smoke Tests') {
-            steps {
-                bat 'npm run test:smoke'
+        stage('Smoke Tests (cross-browser)') {
+            // Runs on every build, on every branch — the fast, cheap gate.
+            // Each BROWSER value becomes its own parallel matrix cell.
+            matrix {
+                axes {
+                    axis {
+                        name 'BROWSER'
+                        values 'chromium', 'firefox', 'webkit'
+                    }
+                }
+                stages {
+                    stage('Run') {
+                        steps {
+                            bat "npx playwright test --grep @smoke --project=%BROWSER%"
+                        }
+                    }
+                }
             }
         }
 
-        stage('Regression Tests') {
-            steps {
-                bat 'npm run test:regression'
+        stage('Regression Tests (cross-browser)') {
+            // Heavier suite, so it's reserved for protected branches, pull
+            // requests, and the nightly cron above — not every feature-branch
+            // push. `branch`/`changeRequest()` require a Multibranch Pipeline
+            // job wired to the repo's SCM (see Phase 16's branch strategy).
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'develop'
+                    changeRequest()
+                }
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'BROWSER'
+                        values 'chromium', 'firefox', 'webkit'
+                    }
+                }
+                stages {
+                    stage('Run') {
+                        steps {
+                            bat "npx playwright test --grep @regression --project=%BROWSER%"
+                        }
+                    }
+                }
             }
         }
     }

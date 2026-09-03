@@ -4,7 +4,6 @@ import type { LoginPage } from '../../pages/LoginPage';
 import type { DashboardPage } from '../../pages/DashboardPage';
 import type { ForgotPasswordPage } from '../../pages/ForgotPasswordPage';
 import { frameworkConfig } from '../../../config/framework.config';
-import users from '../../data/users.json';
 
 /**
  * The "world" every step receives: Playwright's `page` plus the page-object
@@ -45,7 +44,14 @@ Then<World>('I should be successfully logged in', async ({ dashboardPage }) => {
 
 Then<World>('I should see the OrangeHRM dashboard', async ({ page, dashboardPage }) => {
   await expect(page).toHaveURL(/dashboard\/index/);
-  await expect(dashboardPage.header.userDropdownTrigger).toContainText(users.adminUser.displayName);
+  // Deliberately NOT asserting an exact display name here: OrangeHRM's
+  // public demo is shared by anonymous users worldwide who can (and do)
+  // rename the Admin-linked employee via PIM — verified directly when this
+  // exact assertion failed with "UniqueName_&<timestamp> Source" instead of
+  // the expected "Demo Source". Asserting non-empty proves a logged-in
+  // identity renders in the header without depending on shared, externally
+  // mutable demo content.
+  await expect(dashboardPage.header.userDropdownTrigger).not.toBeEmpty();
 });
 
 Then<World>('I should be redirected to the login page', async ({ page, loginPage }) => {
