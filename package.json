@@ -1,0 +1,44 @@
+{
+  "name": "orangehrm-playwright-bdd",
+  "version": "1.0.0",
+  "description": "Enterprise-style Playwright + TypeScript UI automation framework for OrangeHRM using a manual BDD engine and Page Object Model",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:sanity": "playwright test --grep @sanity",
+    "test:regression": "playwright test --grep @regression",
+    "test:negative": "playwright test --grep @negative",
+    "test:employee": "playwright test --grep @employee",
+    "test:dev": "cross-env TEST_ENV=dev playwright test",
+    "test:qa": "cross-env TEST_ENV=qa playwright test",
+    "test:prod": "cross-env TEST_ENV=prod playwright test",
+    "report": "playwright show-report reports/playwright",
+    "allure:generate": "allure generate reports/allure-results --output reports/allure-report --clean",
+    "allure:open": "allure open reports/allure-report"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "bdd",
+    "page-object-model",
+    "orangehrm"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.1",
+    "allure-commandline": "^2.43.0",
+    "allure-playwright": "^3.11.1",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "typescript": "^7.0.2"
+  }
+}

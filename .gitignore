@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.local
+
+# Playwright / test outputs
+/test-results/
+/playwright-report/
+/blob-report/
+/reports/
+/screenshots/
+/videos/
+/traces/
+
+# Allure
+/allure-results/
+/allure-report/
+
+# TypeScript build output
+/dist/
+*.tsbuildinfo
+
+# Logs
+/logs/
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
