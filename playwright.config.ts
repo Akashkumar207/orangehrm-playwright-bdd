@@ -2,9 +2,11 @@ import { defineConfig, devices } from '@playwright/test';
 import { frameworkConfig } from './config/framework.config';
 
 /**
- * Detects whether the run is happening on a CI server (Jenkins sets CI=true).
- * Local runs get a visible browser and no retries for fast feedback;
- * CI runs get headless execution and automatic retries for flaky-network resilience.
+ * Detects whether the run is happening on a CI server. Unlike GitHub
+ * Actions/CircleCI/Travis, Jenkins does NOT set CI=true on its own — the
+ * Jenkinsfile declares it explicitly in its `environment` block. Local
+ * runs get a visible browser and no retries for fast feedback; CI runs get
+ * headless execution and automatic retries for flaky-network resilience.
  */
 const isCI = !!process.env.CI;
 
